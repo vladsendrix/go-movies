@@ -3,11 +3,11 @@ package main
 import (
 	"log"
 
-	"github.com/vladsendrix/go-movies/db"
+	"github.com/vladsendrix/go-movies/database"
 )
 
 func main() {
-	db, err := db.Connect()
+	db, err := database.Connect()
 	if err != nil {
 		log.Fatal(err)
 	}
