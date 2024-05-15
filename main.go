@@ -1,9 +1,10 @@
 package main
 
 import (
-	"flag"
+	"database/sql"
 	"log"
 
+	"github.com/vladsendrix/go-movies/cli"
 	"github.com/vladsendrix/go-movies/concurrency"
 	"github.com/vladsendrix/go-movies/controller"
 	"github.com/vladsendrix/go-movies/database"
@@ -11,27 +12,30 @@ import (
 	"github.com/vladsendrix/go-movies/repository"
 )
 
-func main() {
+func setupDatabase() *sql.DB {
 	db, err := database.Connect()
 	if err != nil {
 		log.Fatal(err)
 	}
+	return db
+}
+
+func setupMovieController(db *sql.DB) *controller.MovieController {
+	movieRepo := repository.NewMovieRepository(db)
+	movieController := controller.NewMovieController(movieRepo)
+	return movieController
+}
+
+func main() {
+	db := setupDatabase()
 	defer db.Close()
 
-	movieRepo := repository.NewMovieRepository(db)
+	concurrencyFlag := cli.ParseFlags()
 
-	movieController := controller.NewMovieController(movieRepo)
-
-	guiFlag := flag.Bool("gui", false, "Enable GUI")
-	concurrencyFlag := flag.Bool("concurrency", false, "Test concurrency")
-	flag.Parse()
-
-	if *concurrencyFlag {
+	if concurrencyFlag {
 		concurrency.TestConcurrency(db)
 	}
 
-	if *guiFlag {
-		gui.StartGUI(movieController)
-	}
-
+	movieController := setupMovieController(db)
+	gui.StartGUI(movieController)
 }
