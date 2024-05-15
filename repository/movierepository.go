@@ -76,3 +76,11 @@ func (r *MovieRepository) Delete(ctx context.Context, id interface{}) error {
 	}
 	return nil
 }
+
+func (r *MovieRepository) DeleteAll(ctx context.Context) error {
+	_, err := r.db.ExecContext(ctx, "DELETE FROM movies")
+	if err != nil {
+		return fmt.Errorf("could not delete all movies: %v", err)
+	}
+	return nil
+}
