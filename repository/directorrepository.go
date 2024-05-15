@@ -44,11 +44,7 @@ func (r *DirectorRepository) GetAll() ([]interface{}, error) {
 	return directors, nil
 }
 
-func (r *DirectorRepository) Create(obj interface{}) error {
-	director, ok := obj.(Director)
-	if !ok {
-		return fmt.Errorf("invalid type, expected Director")
-	}
+func (r *DirectorRepository) Create(director *Director) error {
 	_, err := r.db.Exec("INSERT INTO directors (name) VALUES ($1)", director.Name)
 	if err != nil {
 		return fmt.Errorf("could not insert director: %v", err)

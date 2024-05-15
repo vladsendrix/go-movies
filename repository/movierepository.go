@@ -44,11 +44,7 @@ func (r *MovieRepository) GetAll() ([]interface{}, error) {
 	return movies, nil
 }
 
-func (r *MovieRepository) Create(obj interface{}) error {
-	movie, ok := obj.(Movie)
-	if !ok {
-		return fmt.Errorf("invalid type, expected Movie")
-	}
+func (r *MovieRepository) Create(movie *Movie) error {
 	_, err := r.db.Exec("INSERT INTO movies (title, release_year, director_id) VALUES ($1, $2, $3)", movie.Title, movie.ReleaseYear, movie.DirectorID)
 	if err != nil {
 		return fmt.Errorf("could not insert movie: %v", err)
