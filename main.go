@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"log"
 
 	"github.com/vladsendrix/go-movies/concurrency"
@@ -17,12 +18,20 @@ func main() {
 	}
 	defer db.Close()
 
-	concurrency.TestConcurrency(db)
-
 	movieRepo := repository.NewMovieRepository(db)
 
 	movieController := controller.NewMovieController(movieRepo)
 
-	gui.StartGUI(movieController)
+	guiFlag := flag.Bool("gui", false, "Enable GUI")
+	concurrencyFlag := flag.Bool("concurrency", false, "Test concurrency")
+	flag.Parse()
+
+	if *concurrencyFlag {
+		concurrency.TestConcurrency(db)
+	}
+
+	if *guiFlag {
+		gui.StartGUI(movieController)
+	}
 
 }
