@@ -7,6 +7,7 @@ import (
 
 	"github.com/vladsendrix/go-movies/database"
 	"github.com/vladsendrix/go-movies/repository"
+	"github.com/vladsendrix/go-movies/gui"
 )
 
 func main() {
@@ -15,6 +16,8 @@ func main() {
 		log.Fatal(err)
 	}
 	defer db.Close()
+
+	gui.StartGUI()
 
 	directorRepo := repository.NewDirectorRepository(db)
 
