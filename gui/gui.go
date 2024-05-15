@@ -54,18 +54,24 @@ func StartGUI(movieController *controller.MovieController) {
 	deleteEntry.SetPlaceHolder("Enter Movie ID to delete")
 
 	deleteButton := widget.NewButton("Delete Movie", func() {
-		ID := deleteEntry.Text
-		if ID == "" {
+		idStr := deleteEntry.Text
+		if idStr == "" {
 			fmt.Println("Please enter a movie ID")
 			return
 		}
+		
+		id, err := strconv.Atoi(idStr)
+		if err != nil {
+			fmt.Println("Invalid movie ID:", err)
+			return
+		}
 
-		err := movieController.Delete(ID)
+		err = movieController.Delete(id)
 		if err != nil {
 			fmt.Println("Error deleting movie:", err)
 			return
 		}
-		fmt.Println("Deleted movie with ID:", ID)
+		fmt.Println("Deleted movie with ID:", id)
 	})
 
 	// Assuming you have an updateEntry for entering the new title of the movie to update
