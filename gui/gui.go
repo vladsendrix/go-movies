@@ -1,6 +1,7 @@
 package gui
 
 import (
+	"fmt"
 	"strconv"
 
 	"fyne.io/fyne/v2/app"
@@ -13,24 +14,47 @@ import (
 
 func StartGUI(movieController *controller.MovieController) {
 	myApp := app.New()
-	myWindow := myApp.NewWindow("Movies")
+	myWindow := myApp.NewWindow("Go Movies")
 
 	titleEntry := widget.NewEntry()
 	titleEntry.SetPlaceHolder("Enter Movie Title")
 
+	yearEntry := widget.NewEntry()
+	yearEntry.SetPlaceHolder("Enter Release Year")
+
+	directorIDEntry := widget.NewEntry()
+	directorIDEntry.SetPlaceHolder("Enter Director ID")
+
 	addButton := widget.NewButton("Add Movie", func() {
 		title := titleEntry.Text
-		if title == "" {
-			dialog.ShowInformation("Error", "Please enter a movie title", myWindow)
+		yearStr := yearEntry.Text
+		directorIDStr := directorIDEntry.Text
+
+		if title == "" || yearStr == "" || directorIDStr == "" {
+			dialog.ShowInformation("Error", "Please fill in all fields", myWindow)
+			return
+		}
+
+		year, err := strconv.Atoi(yearStr)
+		if err != nil {
+			dialog.ShowError(err, myWindow)
+			return
+		}
+
+		directorID, err := strconv.Atoi(directorIDStr)
+		if err != nil {
+			dialog.ShowError(err, myWindow)
 			return
 		}
 
 		// Create a new Movie object
 		movie := &entities.Movie{
-			Title: title,
+			Title:       title,
+			ReleaseYear: year,
+			DirectorID:  directorID,
 		}
 
-		err := movieController.Create(movie)
+		err = movieController.Create(movie)
 		if err != nil {
 			dialog.ShowError(err, myWindow)
 			return
@@ -68,11 +92,20 @@ func StartGUI(movieController *controller.MovieController) {
 	newTitleEntry := widget.NewEntry()
 	newTitleEntry.SetPlaceHolder("Enter new Movie Title")
 
+	updateYearEntry := widget.NewEntry()
+	updateYearEntry.SetPlaceHolder("Enter new Release Year")
+
+	updateDirectorIDEntry := widget.NewEntry()
+	updateDirectorIDEntry.SetPlaceHolder("Enter new Director ID")
+
 	updateButton := widget.NewButton("Update Movie", func() {
 		idStr := updateEntry.Text
 		newTitle := newTitleEntry.Text
-		if idStr == "" || newTitle == "" {
-			dialog.ShowInformation("Error", "Please enter a movie ID and new title", myWindow)
+		newYearStr := updateYearEntry.Text
+		newDirectorIDStr := updateDirectorIDEntry.Text
+
+		if idStr == "" || newTitle == "" || newYearStr == "" || newDirectorIDStr == "" {
+			dialog.ShowInformation("Error", "Please fill in all fields", myWindow)
 			return
 		}
 
@@ -82,9 +115,23 @@ func StartGUI(movieController *controller.MovieController) {
 			return
 		}
 
-		// Create a new Movie object with the updated title
+		newYear, err := strconv.Atoi(newYearStr)
+		if err != nil {
+			dialog.ShowError(err, myWindow)
+			return
+		}
+
+		newDirectorID, err := strconv.Atoi(newDirectorIDStr)
+		if err != nil {
+			dialog.ShowError(err, myWindow)
+			return
+		}
+
+		// Create a new Movie object with updated details
 		movie := &entities.Movie{
-			Title: newTitle,
+			Title:       newTitle,
+			ReleaseYear: newYear,
+			DirectorID:  newDirectorID,
 		}
 
 		err = movieController.Update(id, movie)
@@ -92,7 +139,7 @@ func StartGUI(movieController *controller.MovieController) {
 			dialog.ShowError(err, myWindow)
 			return
 		}
-		dialog.ShowInformation("Success", "Updated movie with ID: "+idStr, myWindow)
+		dialog.ShowInformation("Success", fmt.Sprintf("Updated movie with ID %d", id), myWindow)
 	})
 
 	listButton := widget.NewButton("List Movies", func() {
@@ -104,7 +151,7 @@ func StartGUI(movieController *controller.MovieController) {
 
 		var movieList string
 		for _, movie := range movies {
-			movieList += movie.Title + "\n"
+			movieList += fmt.Sprintf("ID: %d, Title: %s, Release Year: %d, Director ID: %d\n", movie.ID, movie.Title, movie.ReleaseYear, movie.DirectorID)
 		}
 
 		if movieList == "" {
@@ -118,6 +165,8 @@ func StartGUI(movieController *controller.MovieController) {
 	inputContainer := container.NewVBox(
 		widget.NewLabel("Add Movie:"),
 		titleEntry,
+		yearEntry,
+		directorIDEntry,
 		addButton,
 		widget.NewLabel("Delete Movie:"),
 		deleteEntry,
@@ -125,6 +174,8 @@ func StartGUI(movieController *controller.MovieController) {
 		widget.NewLabel("Update Movie:"),
 		updateEntry,
 		newTitleEntry,
+		updateYearEntry,
+		updateDirectorIDEntry,
 		updateButton,
 		widget.NewLabel("List Movies:"),
 		listButton,
