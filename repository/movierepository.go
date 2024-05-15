@@ -70,7 +70,7 @@ func (r *MovieRepository) Update(ctx context.Context, id interface{}, obj interf
 }
 
 func (r *MovieRepository) Delete(ctx context.Context, id interface{}) error {
-	_, err := r.db.ExecContext(ctx, "DELETE FROM movies WHERE id = ?", id)
+	_, err := r.db.ExecContext(ctx, "DELETE FROM movies WHERE id = $1", id)
 	if err != nil {
 		return fmt.Errorf("could not delete movie: %v", err)
 	}
