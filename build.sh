@@ -4,9 +4,9 @@
 mkdir -p bin
 
 # Build for Linux
-GOOS=linux GOARCH=amd64 go build -o bin/main_linux main.go
+GOOS=linux GOARCH=amd64 go build -o bin/go-movies main.go
 
 # Build for Windows
-GOOS=windows GOARCH=amd64 go build -o bin/main_windows.exe main.go
+GOOS=windows GOARCH=amd64 go build -o bin/go-movies.exe main.go
 
 echo "Build complete. The executables are in the bin directory."
