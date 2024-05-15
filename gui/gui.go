@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strconv"
 
+	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/dialog"
@@ -15,6 +16,7 @@ import (
 func StartGUI(movieController *controller.MovieController) {
 	myApp := app.New()
 	myWindow := myApp.NewWindow("Go Movies")
+	myWindow.Resize(fyne.NewSize(800, 600))
 
 	titleEntry := widget.NewEntry()
 	titleEntry.SetPlaceHolder("Enter Movie Title")
