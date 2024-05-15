@@ -16,12 +16,12 @@ func NewDirectorController(directorRepo *repository.DirectorRepository) *Directo
 }
 
 func (c *DirectorController) GetByID(id int) (*entities.Director, error) {
-	movie, err := c.DirectorRepo.GetByID(id)
+	director, err := c.DirectorRepo.GetByID(id)
 	if err != nil {
 		return nil, err
 	}
 
-	directorEntity, ok := movie.(*entities.Director)
+	directorEntity, ok := director.(*entities.Director)
 	if !ok {
 		return nil, fmt.Errorf("could not assert type: expected *entities.Director")
 	}
@@ -36,8 +36,8 @@ func (c *DirectorController) GetAll() ([]*entities.Director, error) {
 	}
 
 	directorEntities := make([]*entities.Director, len(directors))
-	for i, movie := range directors {
-		directorEntity, ok := movie.(*entities.Director)
+	for i, director := range directors {
+		directorEntity, ok := director.(*entities.Director)
 		if !ok {
 			return nil, fmt.Errorf("could not assert type: expected *entities.Director")
 		}
@@ -47,8 +47,8 @@ func (c *DirectorController) GetAll() ([]*entities.Director, error) {
 	return directorEntities, nil
 }
 
-func (c *DirectorController) Create(movie *entities.Director) error {
-	err := c.DirectorRepo.Create(movie)
+func (c *DirectorController) Create(director *entities.Director) error {
+	err := c.DirectorRepo.Create(director)
 	if err != nil {
 		return err
 	}
@@ -63,8 +63,8 @@ func (c *DirectorController) Delete(id interface{}) error {
 	return nil
 }
 
-func (c *DirectorController) Update(id int, movie *entities.Director) error {
-	err := c.DirectorRepo.Update(id, movie)
+func (c *DirectorController) Update(id int, director *entities.Director) error {
+	err := c.DirectorRepo.Update(id, director)
 	if err != nil {
 		return err
 	}
