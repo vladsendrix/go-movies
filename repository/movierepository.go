@@ -45,16 +45,16 @@ func (r *MovieRepository) GetAll(ctx context.Context) ([]interface{}, error) {
 	return movies, nil
 }
 
-func (r *MovieRepository) Create(ctx context.Context, obj interface{}) (interface{}, error) {
+func (r *MovieRepository) Create(ctx context.Context, obj interface{}) (error) {
 	movie, ok := obj.(Movie)
 	if !ok {
-		return nil, fmt.Errorf("invalid type, expected Movie")
+		return fmt.Errorf("invalid type, expected Movie")
 	}
 	_, err := r.db.ExecContext(ctx, "INSERT INTO movies (title, release_year, director_id) VALUES ($1, $2, $3)", movie.Title, movie.ReleaseYear, movie.DirectorID)
 	if err != nil {
-		return nil, fmt.Errorf("could not insert movie: %v", err)
+		return fmt.Errorf("could not insert movie: %v", err)
 	}
-	return movie, nil
+	return nil
 }
 
 func (r *MovieRepository) Update(ctx context.Context, id interface{}, obj interface{}) error {
