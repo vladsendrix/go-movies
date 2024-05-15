@@ -17,23 +17,23 @@ func NewMovieRepository(db *sql.DB) *MovieRepository {
 	return &MovieRepository{db: db}
 }
 
-func (r *MovieRepository) GetByID(id interface{}) (interface{}, error) {
+func (r *MovieRepository) GetByID(id int) (*Movie, error) {
 	var movie Movie
-	err := r.db.QueryRow("SELECT * FROM movies WHERE id = ?", id).Scan(&movie.ID, &movie.Title, &movie.ReleaseYear, &movie.DirectorID)
+	err := r.db.QueryRow("SELECT * FROM movies WHERE id = $1", id).Scan(&movie.ID, &movie.Title, &movie.ReleaseYear, &movie.DirectorID)
 	if err != nil {
 		return nil, fmt.Errorf("could not get movie: %v", err)
 	}
-	return movie, nil
+	return &movie, nil
 }
 
-func (r *MovieRepository) GetAll() ([]interface{}, error) {
+func (r *MovieRepository) GetAll() ([]Movie, error) {
 	rows, err := r.db.Query("SELECT * FROM movies")
 	if err != nil {
 		return nil, fmt.Errorf("could not get movies: %v", err)
 	}
 	defer rows.Close()
 
-	var movies []interface{}
+	var movies []Movie
 	for rows.Next() {
 		var movie Movie
 		if err := rows.Scan(&movie.ID, &movie.Title, &movie.ReleaseYear, &movie.DirectorID); err != nil {
@@ -52,11 +52,7 @@ func (r *MovieRepository) Create(movie *Movie) error {
 	return nil
 }
 
-func (r *MovieRepository) Update(id interface{}, obj interface{}) error {
-	movie, ok := obj.(Movie)
-	if !ok {
-		return fmt.Errorf("invalid type, expected Movie")
-	}
+func (r *MovieRepository) Update(id int, movie *Movie) error {
 	_, err := r.db.Exec("UPDATE movies SET title = $1, release_year = $2, director_id = $3 WHERE id = $4", movie.Title, movie.ReleaseYear, movie.DirectorID, id)
 	if err != nil {
 		return fmt.Errorf("could not update movie: %v", err)
@@ -64,7 +60,7 @@ func (r *MovieRepository) Update(id interface{}, obj interface{}) error {
 	return nil
 }
 
-func (r *MovieRepository) Delete(id interface{}) error {
+func (r *MovieRepository) Delete(id int) error {
 	_, err := r.db.Exec("DELETE FROM movies WHERE id = $1", id)
 	if err != nil {
 		return fmt.Errorf("could not delete movie: %v", err)

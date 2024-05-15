@@ -1,8 +1,6 @@
 package controller
 
 import (
-	"fmt"
-
 	"github.com/vladsendrix/go-movies/entities"
 	"github.com/vladsendrix/go-movies/repository"
 )
@@ -21,12 +19,7 @@ func (c *MovieController) GetByID(id int) (*entities.Movie, error) {
 		return nil, err
 	}
 
-	movieEntity, ok := movie.(*entities.Movie)
-	if !ok {
-		return nil, fmt.Errorf("could not assert type: expected *entities.Movie")
-	}
-
-	return movieEntity, nil
+	return movie, nil
 }
 
 func (c *MovieController) GetAll() ([]*entities.Movie, error) {
@@ -37,11 +30,7 @@ func (c *MovieController) GetAll() ([]*entities.Movie, error) {
 
 	movieEntities := make([]*entities.Movie, len(movies))
 	for i, movie := range movies {
-		movieEntity, ok := movie.(*entities.Movie)
-		if !ok {
-			return nil, fmt.Errorf("could not assert type: expected *entities.Movie")
-		}
-		movieEntities[i] = movieEntity
+		movieEntities[i] = &movie
 	}
 
 	return movieEntities, nil
@@ -55,7 +44,7 @@ func (c *MovieController) Create(movie *entities.Movie) error {
 	return nil
 }
 
-func (c *MovieController) Delete(id interface{}) error {
+func (c *MovieController) Delete(id int) error {
 	err := c.MovieRepo.Delete(id)
 	if err != nil {
 		return err
