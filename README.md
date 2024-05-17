@@ -74,3 +74,7 @@ The command line interface is written using the stdlib "flag" package and implem
 ### Building
 
 The build.sh script is used to build the project. The script compiles the Go code and creates a binary in the bin/ directory, it also versions the binary using the latest git tag.
+
+## Docker
+
+The docker compose file is used to spin up the database containers and the database is initialized using the init.sql file. The database is exposed on port 5432.
