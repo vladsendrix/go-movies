@@ -67,6 +67,8 @@ The controller is interacts with the repository to provide an interface for the 
 
 The graphical user interface is written using the Fyne library and has a few options for the user to interact with the database. You have options for listing adding deleting and updating the entities in the database. The GUI is also the default option for the program.
 
+![GUI](.github/assets/gui.png)
+
 ### CLI
 
 The command line interface is written using the stdlib "flag" package and implements the "--concurrency" flag which disables the GUI and only runs the concurrency test.
