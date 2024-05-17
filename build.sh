@@ -1,10 +1,10 @@
 #!/bin/bash
 
-# Get the current Git tag
-GIT_TAG=$(git describe --tags --abbrev=0)
+# Get the current Git commit hash
+GIT_HASH=$(git rev-parse --short HEAD)
 
-if [ -z "$GIT_TAG" ]; then
-    echo "Error: No Git tag found."
+if [ -z "$GIT_HASH" ]; then
+    echo "Error: No Git commit hash found."
     exit 1
 fi
 
@@ -12,9 +12,9 @@ fi
 mkdir -p bin
 
 # Build for Linux
-GOOS=linux GOARCH=amd64 go build -ldflags="-X main.version=$GIT_TAG" -o bin/go-movies-$GIT_TAG-linux-amd64 main.go
+GOOS=linux GOARCH=amd64 go build -ldflags="-X main.version=$GIT_HASH" -o bin/go-movies-$GIT_HASH-linux-amd64 main.go
 
 # Build for Windows
-GOOS=windows GOARCH=amd64 go build -ldflags="-X main.version=$GIT_TAG" -o bin/go-movies-$GIT_TAG-windows-amd64.exe main.go
+GOOS=windows GOARCH=amd64 go build -ldflags="-X main.version=$GIT_HASH" -o bin/go-movies-$GIT_HASH-windows-amd64.exe main.go
 
 echo "Build complete. The executables are in the bin directory."
